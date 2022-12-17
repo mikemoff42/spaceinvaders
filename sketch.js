@@ -347,6 +347,7 @@ function keyPressed() {
     fire.play(0, 1.2, 0.15);
     bullets.push(bullet);
   } else if (key === "q") gundelay = 5;
+  else if (key === "w") gundelay = 20;
 }
 
 function mousePressed() {
