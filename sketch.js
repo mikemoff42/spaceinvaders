@@ -1,4 +1,4 @@
-const gundelay = 20;
+const gundelay = 5;
 const delaytime = 100;
 const shipcount = 33;
 
