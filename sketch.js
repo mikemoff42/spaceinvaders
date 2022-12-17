@@ -1,7 +1,7 @@
-const gundelay = 5;
 const delaytime = 100;
 const shipcount = 33;
 
+let gundelay = 20;
 let level;
 let gunspeed;
 let randomZaps;
@@ -346,7 +346,7 @@ function keyPressed() {
     let bullet = new Bullet(paddle.x, height * 0.9, 0);
     fire.play(0, 1.2, 0.15);
     bullets.push(bullet);
-  }
+  } else if (key === "q") gundelay = 5;
 }
 
 function mousePressed() {
