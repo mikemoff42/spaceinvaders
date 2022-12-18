@@ -40,13 +40,13 @@ function setup() {
 }
 
 function draw() {
-  if (level==1) background(0, 30, 110,160);
+  if (level==1) background(20, 30, 110,160);
   else background(110,30,30,160);
   textSize(32);
   textAlign(CENTER);
   fill(250,250,250,100);
   noStroke();
-  text('Level '+level,width/2,height*0.1);
+  text('update1-Level '+level,width/2,height*0.1);
   Play();
 
 }
@@ -115,6 +115,7 @@ function Play() {
 }
 
 function fireGun() {
+  if (turboEnabled && !gameisover) gunspeed = 5;
   if (mouseIsPressed && !gameisover) {
     dlay++;
     if (dlay % gunspeed == 0 && spreadEnabled) {
@@ -125,10 +126,7 @@ function fireGun() {
       }
     } else if (dlay % gunspeed == 0) {
       let bullet = new Bullet(paddle.x, height * 0.9, 0);
-      if (turboEnabled) {
-        fire.play(0, 1.7, 0.15);
-        gunspeed = 5;
-      }
+      if (turboEnabled) fire.play(0, 1.7, 0.15);
       else fire.play(0, 1.2, 0.15);
       bullets.push(bullet);
     }
