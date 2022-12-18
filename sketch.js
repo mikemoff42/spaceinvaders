@@ -120,7 +120,7 @@ function fireGun() {
     dlay++;
     if (dlay % gunspeed == 0 && spreadEnabled) {
       fire.play(0, 1.5, 0.15);
-      for (let i = -2; i <= 2; i += 2) {
+      for (let i = -1; i <= 1; i++) {
         let bullet = new Bullet(paddle.x, height * 0.9, i);
         bullets.push(bullet);
       }
@@ -357,7 +357,7 @@ function keyPressed() {
 function mousePressed() {
   if (spreadEnabled && !gameisover) {
     fire.play(0, 1.2, 0.15);
-    for (let i = -2; i <= 2; i += 2) {
+    for (let i = -1; i <= 1; i ++) {
       let bullet = new Bullet(paddle.x, height * 0.9, i);
       bullets.push(bullet);
     }

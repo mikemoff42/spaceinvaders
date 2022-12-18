@@ -3,7 +3,7 @@ function Bullet(x, y, angle) {
   this.y = y;
   this.r = width * 0.003;
   this.alive = true;
-  this.angle = angle;
+  this.angle = angle * 2;
 
   this.show = function () {
     fill(35, 250, 35, 120);
