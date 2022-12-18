@@ -16,7 +16,7 @@ function Zap(ship) {
 
   this.checkHit = function () {
     let d = dist(this.x, this.y, paddle.x, paddle.y);
-    let r = this.r / 2 + paddle.r / 2;
+    let r = this.r / 2 + paddle.r / 4;
     if (d < r && !gameisover && this.alive) {
       damage++;
       createFire();
