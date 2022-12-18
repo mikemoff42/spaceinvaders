@@ -40,7 +40,7 @@ function setup() {
 }
 
 function draw() {
-  if (level==1) background(20, 30, 110,160);
+  if (level==1) background(0, 30, 110,160);
   else background(110,30,30,160);
   textSize(32);
   textAlign(CENTER);
