@@ -40,14 +40,15 @@ function setup() {
 }
 
 function draw() {
-  if (level==1) background(20, 30, 110,160);
+  if (level==1) background(0, 30, 110,160);
   else background(110,30,30,160);
   textSize(32);
   textAlign(CENTER);
   fill(250,250,250,100);
   noStroke();
-  text('update1-Level '+level,width/2,height*0.1);
-  Play();
+  text('Level '+level,width/2,height*0.1);
+  if (gameisover) gameOver()
+  else Play();
 
 }
 
@@ -105,18 +106,17 @@ function Play() {
   turboDrop();
   spreadDrop();
   randomZaps -= 0.00001;
-  if (ships.length == 0 && !gameisover && endgame == false) {
+  if (ships.length == 0 && endgame == false) {
     endgame = true;
     if (level == 1) randomZaps = 0.999;
     else randomZaps = 0.88;
     for(let i=0;i<blockers.length;i++) blockers[i].yMove = random(-2,-5);
   }
-  if (gameisover) gameOver();
 }
 
 function fireGun() {
-  if (turboEnabled && !gameisover) gunspeed = 5;
-  if (mouseIsPressed && !gameisover) {
+  if (turboEnabled) gunspeed = 5;
+  if (mouseIsPressed) {
     dlay++;
     if (dlay % gunspeed == 0 && spreadEnabled) {
       fire.play(0, 1.5, 0.15);
@@ -202,11 +202,11 @@ function showUFOs() {
 
 function checkZapHits() {
   let rnd = random();
-  if (rnd > randomZaps && ships.length > 0 && !gameisover) {
+  if (rnd > randomZaps && ships.length > 0) {
     let ship = random(ships);
     let zap = new Zap(ship);
     zaps.push(zap);
-  } else if (rnd > randomZaps && endgame && !gameisover) {
+  } else if (rnd > randomZaps && endgame) {
     let blocker = random(blockers);
     let zap = new Zap(blocker);
     zaps.push(zap);
@@ -222,7 +222,7 @@ function checkZapHits() {
 
 function turboDrop() {
   let rnd = random();
-  if (rnd > 0.997 && !gameisover && !turboActive) {
+  if (rnd > 0.997 && !turboActive) {
     turboActive = true;
     let trbox = random(width * 0.1, width * 0.9);
     trbo = new Special(trbox, height * 0.1, "turbo");
@@ -248,7 +248,7 @@ function turboDrop() {
 
 function spreadDrop() {
   let rnd = random();
-  if (rnd > 0.997 && !gameisover && !spreadActive) {
+  if (rnd > 0.997 && !spreadActive) {
     spreadActive = true;
     let sprdx = random(width * 0.1, width * 0.9);
     sprd = new Special(sprdx, height * 0.1, "spread");
@@ -318,7 +318,11 @@ function createShips() {
 }
 
 function gameOver() {
-  gameisover = true;
+  paddle.show();
+  paddleOnFire();
+  for (let i = 0; i < blockers.length; i++) blockers[i].show();
+  for (let i = 0; i < ships.length; i++) ships[i].show();
+  for (let i = 0; i < zaps.length; i++) if (zaps[i].alive == true) zaps[i].show();
   turboActive = false;
   textSize(width*.06);
   textAlign(CENTER);

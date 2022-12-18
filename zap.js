@@ -22,8 +22,8 @@ function Zap(ship) {
       createFire();
       zaphit.play(0, 1, 0.5);
       paddle.img = paddleImg2;
-      if (damage > 1) gameOver();
-      this.alive = false;
+      if (damage > 1) gameisover = true;
+      else this.alive = false;
     }
   }
 }
