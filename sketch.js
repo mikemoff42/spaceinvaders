@@ -95,7 +95,7 @@ function Level2() {
   createBlockers();  
 }
 
-function Play() {    
+function Play() {
   fireGun();
   paddle.show();
   paddleOnFire();
@@ -342,7 +342,7 @@ function gameOver() {
 function keyPressed() {
   if (key === " " && spreadEnabled && !gameisover && dlay == 0) {
     fire.play(0, 1.5, 0.15);
-    for (let i = -2; i <= 2; i += 2) {
+    for (let i = -1; i <= 1; i++) {
       let bullet = new Bullet(paddle.x, height * 0.9, i);
       bullets.push(bullet);
     }
