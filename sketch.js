@@ -21,7 +21,6 @@ let zaphit;
 let damage;
 let winner = false;
 let endgame = false;
-let prevx = 0;
 let turboActive = false;
 let spreadActive = false;
 let turboEnabled = false;
@@ -101,7 +100,7 @@ function Play() {
   paddleOnFire();
   checkShipHits();
   showUFOs();
-  checkBulletHits();  
+  checkBulletHits();
   checkZapHits();
   turboDrop();
   spreadDrop();
@@ -126,7 +125,10 @@ function fireGun() {
       }
     } else if (dlay % gunspeed == 0) {
       let bullet = new Bullet(paddle.x, height * 0.9, 0);
-      if (turboEnabled) fire.play(0, 1.7, 0.15);
+      if (turboEnabled) {
+        fire.play(0, 1.7, 0.15);
+        gunspeed = 5;
+      }
       else fire.play(0, 1.2, 0.15);
       bullets.push(bullet);
     }
@@ -134,7 +136,7 @@ function fireGun() {
 }
 
 function checkShipHits() {
-  for (let i = 0; i < ships.length; i++) {
+  for (let i = ships.length-1; i >=0; i--) {
     if (ships[i].checkHit()) {
       zaphit.play(0, 1, 0.5);
       paddle.img = paddleImg2;
@@ -146,12 +148,11 @@ function checkShipHits() {
 }
 
 function checkBulletHits() {
-  for (let i = 0; i < bullets.length; i++) {
+  for (let i = bullets.length-1; i >=0; i--) {
     bullets[i].show();
     bullets[i].move();
     for (let j = 0; j < ships.length; j++) {
-      if (bullets[i].checkHit(ships[j])) {
-        
+      if (bullets[i].checkHit(ships[j])) {        
         if (ships[j].hits > 0) {
           ships[j].alive = false;
           shiphit.play(0,1);
@@ -160,7 +161,7 @@ function checkBulletHits() {
         ships[j].hits++;
       }
     }
-    for (let k = 0; k < blockers.length; k++) {
+    for (let k = blockers.length-1; k >=0; k--) {
       if (bullets[i].checkHitBlocker(blockers[k])) {
         bullets[i].alive = false;
         if (endgame) {
@@ -188,7 +189,6 @@ function checkBulletHits() {
 function showUFOs() {
   for (let i = 0; i < blockers.length; i++) {
     blockers[i].show();
-    prevx = blockers[i].x;
   }
   if (blockers.length > 1){
     let d = dist(blockers[0].x,blockers[0].y,blockers[1].x,blockers[1].y);
@@ -213,7 +213,7 @@ function checkZapHits() {
     let zap = new Zap(blocker);
     zaps.push(zap);
   }
-  for (let i = 0; i < zaps.length; i++) {
+  for (let i = zaps.length-1; i >=0; i--) {
     if (zaps[i].y > height) zaps.splice(i, 1);
     else {
       zaps[i].checkHit();
@@ -221,6 +221,33 @@ function checkZapHits() {
     }
   }
 }
+
+function turboDrop() {
+  let rnd = random();
+  if (rnd > 0.997 && !gameisover && !turboActive) {
+    turboActive = true;
+    let trbox = random(width * 0.1, width * 0.9);
+    trbo = new Special(trbox, height * 0.1, "turbo");
+  }
+  if (turboActive && trbo != null) {
+    if (trbo.checkHit()) {
+      turboEnabled = true;
+      trbo = null;
+    } else if (trbo.y > height) {
+      turboActive = false;
+      trbo = null;
+    } else trbo.show();
+  }
+
+  if (turboEnabled && trboCounter < delaytime) {
+    trboCounter++;
+  } else if (trboCounter >= delaytime) {
+    trboCounter = 0;
+    turboEnabled = false;
+    turboActive = false;
+  } else gunspeed = gundelay;
+}
+
 function spreadDrop() {
   let rnd = random();
   if (rnd > 0.997 && !gameisover && !spreadActive) {
@@ -259,37 +286,12 @@ function paddleOnFire() {
       fires[i] = new Fire();
     }
   }
-    for (let i=0;i<fires.length;i++){
+  for (let i=0;i<fires.length;i++){
       if (damage>0 && !winner) fires[i].show();
     }
 }
 
-function turboDrop() {
-  let rnd = random();
-  if (rnd > 0.997 && !gameisover && !turboActive) {
-    turboActive = true;
-    let trbox = random(width * 0.1, width * 0.9);
-    trbo = new Special(trbox, height * 0.1, "turbo");
-  }
-  if (turboActive && trbo != null) {
-    if (trbo.checkHit()) {
-      turboEnabled = true;
-      trbo = null;
-    } else if (trbo.y > height) {
-      turboActive = false;
-      trbo = null;
-    } else trbo.show();
-  }
 
-  if (turboEnabled && trboCounter < delaytime) {
-    gunspeed = 5;
-    trboCounter++;
-  } else if (trboCounter >= delaytime) {
-    trboCounter = 0;
-    turboEnabled = false;
-    turboActive = false;
-  } else gunspeed = gundelay;
-}
 function createBlockers() {
   let bposx = width * 0.1;
   let dir = 1;
@@ -357,7 +359,9 @@ function mousePressed() {
       let bullet = new Bullet(paddle.x, height * 0.9, i);
       bullets.push(bullet);
     }
-  } else if (!gameisover) {
+  } 
+  else if (!gameisover && turboEnabled) gundelay = 5;
+  else if (!gameisover) {
     let bullet = new Bullet(paddle.x, height * 0.9, 0);
     fire.play(0, 1.2, 0.15);
     bullets.push(bullet);
