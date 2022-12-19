@@ -20,7 +20,8 @@ function Zap(ship) {
     if (d < r && !gameisover && this.alive) {
       damage++;
       createFire();
-      zaphit.play(0, 1, 0.5);
+      zaphit = new sound("images/zap-hit.mp3",1);
+      zaphit.play();
       paddle.img = paddleImg2;
       if (damage > 1) gameisover = true;
       else this.alive = false;

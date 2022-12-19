@@ -35,7 +35,7 @@ let playonce;
 
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(700, 700);
   newGame();
 }
 
@@ -71,7 +71,7 @@ function newGame() {
   sprd = null;
   createShips();
   createBlockers();
-  whoosh.stop();
+  //whoosh.stop();
 }
 
 function Level2() {
@@ -123,15 +123,26 @@ function fireGun() {
     else gunspeed = gundelay;
     dlay++;
     if (dlay % gunspeed == 0 && spreadEnabled) {
-      fire.play(0, 1.5, 0.15);
+      //fire.play(0, 1.5, 0.15);
+      fire = new sound("images/fire.mp3",0.5);
+      fire.play();
       for (let i = -1; i <= 1; i++) {
         let bullet = new Bullet(paddle.x, height * 0.9, i);
         bullets.push(bullet);
       }
     } else if (dlay % gunspeed == 0) {
       let bullet = new Bullet(paddle.x, height * 0.9, 0);
-      if (turboEnabled) fire.play(0, 1.7, 0.15);
-      else fire.play(0, 1.2, 0.15);
+      // fire = new sound("images/fire.mp3",1.5);
+      // fire.play();
+      // else fire.play(0, 1.2, 0.15);
+      if (turboEnabled) {
+        fire = new sound("images/fire.mp3",1.9);
+        fire.play();
+      } else {
+        fire = new sound("images/fire.mp3",1);
+        fire.play();
+      }
+
       bullets.push(bullet);
     }
   } else dlay = 0;
@@ -140,7 +151,9 @@ function fireGun() {
 function checkShipHits() {
   for (let i = ships.length-1; i >=0; i--) {
     if (ships[i].checkHit()) {
-      zaphit.play(0, 1, 0.5);
+      zaphit = new sound("images/zap-hit.mp3",1);
+      zaphit.play();
+      //zaphit.play(0, 1, 0.5);
       paddle.img = paddleImg2;
       gameisover = true;
     }
@@ -157,8 +170,14 @@ function checkBulletHits() {
       if (bullets[i].checkHit(ships[j])) {        
         if (ships[j].hits > 0) {
           ships[j].alive = false;
-          shiphit.play(0,1);
-        } else shiphit.play(0,2.5);
+          shiphit = new sound("images/shiphit.mp3",1);
+          shiphit.play();
+          //shiphit.play(0,1);
+        } else {
+          //shiphit.play(0,2.5);
+          shiphit = new sound("images/shiphit.mp3",2.5);
+          shiphit.play();
+        }
         bullets[i].alive = false;
         ships[j].hits++;
       }
@@ -169,7 +188,9 @@ function checkBulletHits() {
         if (endgame) {
           blockers[k].dmg++;
           blockers[k].speedup = true;
+          zaphit = new sound("images/zap-hit.mp3",0.5);
           zaphit.play();
+          //zaphit.play();
         }
         if (blockers[k].dmg > 4) blockers.splice(k, 1);
         if (blockers.length == 0) {
@@ -277,8 +298,10 @@ function spreadDrop() {
 }
 
 function createFire(){
-  for (let i=0;i<300;i++){
-    fires[i] = new Fire();
+  if (damage > 0) {
+      for (let i=0;i<300;i++){
+      fires[i] = new Fire();
+    }
   }
 }
 
@@ -336,8 +359,7 @@ function gameOver() {
   if (winner) text("WINNER!", height / 2, width / 2);
   else text("GAME OVER", height / 2, width / 2);
   if (winner && playonce){
-    fire.stop();
-    zaphit.stop();
+    whoosh = new sound("images/whoosh.wav",1);
     whoosh.play();
     playonce=false;
   }
@@ -345,14 +367,14 @@ function gameOver() {
 
 function keyPressed() {
   if (key === " " && spreadEnabled && !gameisover && dlay == 0) {
-    fire.play(0, 1.5, 0.15);
+    //fire.play(0, 1.5, 0.15);
     for (let i = -1; i <= 1; i++) {
       let bullet = new Bullet(paddle.x, height * 0.9, i);
       bullets.push(bullet);
     }
   } else if (key === " " && !gameisover && dlay == 0) {
     let bullet = new Bullet(paddle.x, height * 0.9, 0);
-    fire.play(0, 1.2, 0.15);
+    //fire.play(0, 1.2, 0.15);
     bullets.push(bullet);
   } else if (key === "q") gundelay = 5;
   else if (key === "w") gundelay = 20;
@@ -360,22 +382,38 @@ function keyPressed() {
 
 function mousePressed() {
   if (spreadEnabled && !gameisover) {
-    fire.play(0, 1.2, 0.15);
+      fire = new sound("images/fire.mp3",1.5);
+      fire.play();
     for (let i = -1; i <= 1; i ++) {
       let bullet = new Bullet(paddle.x, height * 0.9, i);
       bullets.push(bullet);
     }
-  } 
-  else if (!gameisover && turboEnabled) gundelay = 5;
+  }
   else if (!gameisover) {
     let bullet = new Bullet(paddle.x, height * 0.9, 0);
-    fire.play(0, 1.2, 0.15);
+    fire = new sound("images/fire.mp3",1);
+    fire.play();
     bullets.push(bullet);
   } else newGame();
 }
 
+function sound(src,rate) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.playbackRate = rate;
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
+}
+
 function preload() {
-  soundFormats("mp3", "ogg", "wav");
   ship1 = loadImage("images/ship1.png");
   ship2 = loadImage("images/ship2.png");
   ship3 = loadImage("images/ship3.png");
@@ -383,8 +421,4 @@ function preload() {
   paddleImg2 = loadImage("images/paddle2.png");
   bolt = loadImage("images/bolt.png");
   blockerImg = loadImage("images/blocker.png");
-  fire = loadSound("images/fire.mp3");
-  zaphit = loadSound("images/zap-hit.mp3");
-  whoosh = loadSound("images/whoosh.wav");
-  shiphit = loadSound("images/shiphit.mp3");
 }
