@@ -85,7 +85,9 @@ function Level2() {
   gameisover = false;
   damage = 0;
   turboEnabled = false;
+  turboActive = false;
   spreadEnabled = false;
+  spreadActive = false;
   randomZaps = 0.98;
   paddle.img = paddleImg;
   trbo = null;
@@ -115,8 +117,10 @@ function Play() {
 }
 
 function fireGun() {
-  if (turboEnabled) gunspeed = 5;
+  
   if (mouseIsPressed) {
+    if (turboEnabled) gunspeed = 5;
+    else gunspeed = gundelay;
     dlay++;
     if (dlay % gunspeed == 0 && spreadEnabled) {
       fire.play(0, 1.5, 0.15);
