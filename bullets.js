@@ -15,13 +15,13 @@ function Bullet(x, y, angle) {
     this.x += angle;
   }
   this.checkHit = function (ship) {
-    let checkdist = dist(this.x, this.y, ship.x, ship.y);
-    return (checkdist < this.r + ship.r)
+    let d = dist(this.x, this.y, ship.x, ship.y);
+    let r = this.r/2 + ship.r/2;
+    return (d<r);
   }
   this.checkHitBlocker = function (blocker) {
-    let lineX1 = blocker.x - blocker.w * 0.5;
-    let lineX2 = blocker.x + blocker.w * 0.5;
-    let lineY = blocker.y + blocker.h * 0.5;
-    return (this.x > lineX1 && this.x < lineX2 && this.y < lineY+5)
+    let d = dist(this.x,this.y,blocker.x,blocker.y);
+    let r = this.r/2 + blocker.r/2;
+    return (d<r);
   }
 }

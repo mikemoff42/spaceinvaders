@@ -7,7 +7,7 @@ function Zap(ship) {
   this.alive = true;
 
   this.show = function () {
-    if (!winner) image(bolt, this.x, this.y, this.r * 1.5, this.r * 1.5);
+    if (!winner && this.alive) image(bolt, this.x, this.y, this.r * 1.5, this.r * 1.5);
     if (!gameisover) {
       this.y += this.speed;
       this.x += this.angle;
@@ -16,7 +16,7 @@ function Zap(ship) {
 
   this.checkHit = function () {
     let d = dist(this.x, this.y, paddle.x, paddle.y);
-    let r = this.r / 2 + paddle.r / 3;
+    let r = this.r / 2 + paddle.r / 2.5;
     if (d < r && !gameisover && this.alive) {
       damage++;
       createFire();

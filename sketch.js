@@ -71,7 +71,6 @@ function newGame() {
   sprd = null;
   createShips();
   createBlockers();
-  //whoosh.stop();
 }
 
 function Level2() {
@@ -123,8 +122,8 @@ function fireGun() {
     else gunspeed = gundelay;
     dlay++;
     if (dlay % gunspeed == 0 && spreadEnabled) {
-      //fire.play(0, 1.5, 0.15);
       fire = new sound("images/fire.mp3",0.5);
+      fire.sound.volume = 0.25;
       fire.play();
       for (let i = -1; i <= 1; i++) {
         let bullet = new Bullet(paddle.x, height * 0.9, i);
@@ -132,14 +131,13 @@ function fireGun() {
       }
     } else if (dlay % gunspeed == 0) {
       let bullet = new Bullet(paddle.x, height * 0.9, 0);
-      // fire = new sound("images/fire.mp3",1.5);
-      // fire.play();
-      // else fire.play(0, 1.2, 0.15);
       if (turboEnabled) {
         fire = new sound("images/fire.mp3",1.9);
+        fire.sound.volume = 0.25;
         fire.play();
       } else {
         fire = new sound("images/fire.mp3",1);
+        fire.sound.volume = 0.25;
         fire.play();
       }
 
@@ -153,7 +151,6 @@ function checkShipHits() {
     if (ships[i].checkHit()) {
       zaphit = new sound("images/zap-hit.mp3",1);
       zaphit.play();
-      //zaphit.play(0, 1, 0.5);
       paddle.img = paddleImg2;
       gameisover = true;
     }
@@ -172,9 +169,7 @@ function checkBulletHits() {
           ships[j].alive = false;
           shiphit = new sound("images/shiphit.mp3",1);
           shiphit.play();
-          //shiphit.play(0,1);
         } else {
-          //shiphit.play(0,2.5);
           shiphit = new sound("images/shiphit.mp3",2.5);
           shiphit.play();
         }
@@ -190,7 +185,6 @@ function checkBulletHits() {
           blockers[k].speedup = true;
           zaphit = new sound("images/zap-hit.mp3",0.5);
           zaphit.play();
-          //zaphit.play();
         }
         if (blockers[k].dmg > 4) blockers.splice(k, 1);
         if (blockers.length == 0) {
@@ -214,8 +208,7 @@ function showUFOs() {
     blockers[i].show();
   }
   if (blockers.length > 1){
-    let d = dist(blockers[0].x,blockers[0].y,blockers[1].x,blockers[1].y);
-    
+    let d = dist(blockers[0].x,blockers[0].y,blockers[1].x,blockers[1].y);    
     if (d < blockers[0].w){
       for (let i=0;i<2;i++) {
         blockers[i].xMove*=-1;
@@ -240,7 +233,7 @@ function checkZapHits() {
     if (zaps[i].y > height) zaps.splice(i, 1);
     else {
       zaps[i].checkHit();
-      if (zaps[i].alive) zaps[i].show();
+      zaps[i].show();
     }
   }
 }
@@ -349,7 +342,7 @@ function gameOver() {
   paddleOnFire();
   for (let i = 0; i < blockers.length; i++) blockers[i].show();
   for (let i = 0; i < ships.length; i++) ships[i].show();
-  for (let i = 0; i < zaps.length; i++) if (zaps[i].alive == true) zaps[i].show();
+  for (let i = 0; i < zaps.length; i++) zaps[i].show();
   turboActive = false;
   textSize(width*.06);
   textAlign(CENTER);
@@ -367,14 +360,18 @@ function gameOver() {
 
 function keyPressed() {
   if (key === " " && spreadEnabled && !gameisover && dlay == 0) {
-    //fire.play(0, 1.5, 0.15);
+    fire = new sound("images/fire.mp3",1);
+    fire.sound.volume = 0.25;
+    fire.play();
     for (let i = -1; i <= 1; i++) {
       let bullet = new Bullet(paddle.x, height * 0.9, i);
       bullets.push(bullet);
     }
   } else if (key === " " && !gameisover && dlay == 0) {
     let bullet = new Bullet(paddle.x, height * 0.9, 0);
-    //fire.play(0, 1.2, 0.15);
+    fire = new sound("images/fire.mp3",1);
+    fire.sound.volume = 0.25;
+    fire.play();
     bullets.push(bullet);
   } else if (key === "q") gundelay = 5;
   else if (key === "w") gundelay = 20;
@@ -382,8 +379,9 @@ function keyPressed() {
 
 function mousePressed() {
   if (spreadEnabled && !gameisover) {
-      fire = new sound("images/fire.mp3",1.5);
-      fire.play();
+    fire = new sound("images/fire.mp3",1);
+    fire.sound.volume = 0.25;
+    fire.play();
     for (let i = -1; i <= 1; i ++) {
       let bullet = new Bullet(paddle.x, height * 0.9, i);
       bullets.push(bullet);
@@ -392,6 +390,7 @@ function mousePressed() {
   else if (!gameisover) {
     let bullet = new Bullet(paddle.x, height * 0.9, 0);
     fire = new sound("images/fire.mp3",1);
+    fire.sound.volume = 0.25;
     fire.play();
     bullets.push(bullet);
   } else newGame();
@@ -404,6 +403,7 @@ function sound(src,rate) {
   this.sound.setAttribute("controls", "none");
   this.sound.playbackRate = rate;
   this.sound.style.display = "none";
+  this.sound.volume = 1;
   document.body.appendChild(this.sound);
   this.play = function(){
     this.sound.play();
